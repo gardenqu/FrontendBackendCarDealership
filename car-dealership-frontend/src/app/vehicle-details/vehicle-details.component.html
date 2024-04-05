@@ -1,0 +1,52 @@
+<section class="panel">
+    <div *ngIf="vehicle$ | async as vehicle"class="panel-body">
+        <div class="col-md-6">
+            <div class="pro-img-details" >
+                <img src="https://www.bootdey.com/image/550x380/FFB6C1/000000" alt="">
+            </div>
+            <div   class="description">
+              <table>
+                  <tr>
+                    <td><strong>Mileage:</strong></td>
+                    <td><span class="info">{{vehicle.mileage}}</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Transmission:</strong></td>
+                    <td><span class="info">{{vehicle.transmission}}</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Color:</strong></td>
+                    <td><span class="info">{{vehicle.color}}</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Interior:</strong></td>
+                    <td><span class="info">{{vehicle.interior}}</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>MSRP:</strong></td>
+                    <td><span class="info">{{vehicle.msrp}}</span></td>
+                  </tr>
+                </table >
+                
+          </div>
+        </div>
+        <div  class="col-md-6">
+            <h4  class="pro-d-title">
+                <a  href="#" class="">
+                  {{ vehicle.models.make.make }}
+                </a>
+            </h4>
+            <p>
+                {{vehicle.description}}
+            </p>
+            <div class="product_meta">
+                <span class="posted_in"> <strong>Categories:</strong> <a rel="tag" href="#">{{vehicle.models.make.make}}</a>, <a rel="tag" href="#">{{vehicle.color}}</a>, <a rel="tag" href="#">{{vehicle.models.modelname}}</a></span>
+                <span class="tagged_as"><strong>Tags:</strong> <a rel="tag" href="#" *ngIf="vehicle.new==true; else usedContent">New</a><ng-template #usedContent><a  rel="tag" href="#">Used</a></ng-template> </span>
+            </div>
+            <div class="m-bot15"> <strong>Price : </strong> <span class="price">{{vehicle.saleprice}}</span>  <span  class ="bought" *ngIf="vehicle.issold==true">{{vehicle.saleprice}}SOLD </span></div>
+            <p>
+                <button class="btn btn-round btn-danger" type="button"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+            </p>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,61 @@
+<h6>Add Vehicle Form</h6>
+<form (ngSubmit)="addVehicle()">
+    <label for="vin">VIN:</label>
+    <input type="text" id="vin" name="vin" [(ngModel)]="newVehicle.vin" required>
+
+    <label for="model">Model:</label>
+    <select id="model" name="model" [(ngModel)]="newVehicle.models">
+        <option disabled selected></option>
+        <option *ngFor="let model of models" [ngValue]="model">{{model.modelname}}</option>
+    </select>
+    
+    <label for="make">Make:</label>
+    <select id="make" name="make" [(ngModel)]="newVehicle.models.make">
+        <option disabled selected></option>
+        <option *ngFor="let make of makes" [ngValue]="make">{{make.make}}</option>
+    </select>
+
+    
+    <label for="color">Color:</label>
+    <input type="text" id="color" name="color" [(ngModel)]="newVehicle.color" required>
+    
+    <label for="new">New:</label>
+    <input type="checkbox" id="new" name="new" [(ngModel)]="newVehicle.new">
+  
+    
+    <label for="bodystyle">Body Style:</label>
+    <input type="text" id="bodystyle" name="bodystyle" [(ngModel)]="newVehicle.bodystyle">
+    
+    <label for="transmission">Transmission:</label>
+    <input type="text" id="transmission" name="transmission" [(ngModel)]="newVehicle.transmission">
+    
+    <label for="interior">Interior:</label>
+    <input type="text" id="interior" name="interior" [(ngModel)]="newVehicle.interior">
+    
+    <label for="year">Year:</label>
+    <input type="number" id="year" name="year" [(ngModel)]="newVehicle.year">
+    
+    <label for="msrp">MSRP:</label>
+    <input type="number" id="msrp" name="msrp" [(ngModel)]="newVehicle.msrp">
+    
+    <label for="mileage">Mileage:</label>
+    <input type="number" id="mileage" name="mileage" [(ngModel)]="newVehicle.mileage">
+    
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" [(ngModel)]="newVehicle.description"></textarea>
+    
+    <label for="photo">Photo:</label>
+    <input type="text" id="photo" name="photo" [(ngModel)]="newVehicle.photo">
+    
+    <label for="featured">Featured:</label>
+    <input type="checkbox" id="featured" name="featured" [(ngModel)]="newVehicle.featured">
+    
+    <label for="issold">Is Sold:</label>
+    <input type="checkbox" id="issold" name="sold" [(ngModel)]="newVehicle.issold">
+    
+    <label for="saleprice">Sale Price:</label>
+    <input type="number" id="saleprice" name="salesprice" [(ngModel)]="newVehicle.saleprice">
+  
+    <button type="submit">Submit</button>
+  </form>
+  

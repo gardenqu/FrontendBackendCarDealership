@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Vehicle } from '../vehicle';
+import { Vehicle } from '../Entity/vehicle';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgModelGroup } from '@angular/forms';
 import { VehicleServiceService } from '../vehicle-service.service';
 import { Router } from '@angular/router';
-import { Model } from '../model';
-import { Make } from '../make';
+import { Model } from '../Entity/model';
+import { Make } from '../Entity/make';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -17,17 +17,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class AddVehicleComponentComponent  implements OnInit{
 
-  newVehicle: any = {
-    models: { make: '', modelname: '' }, // Initialize 'models' with make and modelname properties
-    color: '',
-    // Add other properties as needed
-  };
+  newVehicle: any = { model: { make: {} } };
 
 
-  models: Model[]=[];
   makes:Make[]= [];
+  models:Model[]=[]
+  filteredModels: Model[]=[];
 
   constructor( private  vehicleService: VehicleServiceService,private vRoute:Router) { }
+
   ngOnInit(): void {
     this.getMakes()
     this.getModels()
@@ -61,6 +59,8 @@ export class AddVehicleComponentComponent  implements OnInit{
 
 
 
+
+
   public getModels(): void{
     this.vehicleService.getModels().subscribe(
       (response: Model[])=>{
@@ -69,6 +69,7 @@ export class AddVehicleComponentComponent  implements OnInit{
       },(error:HttpErrorResponse)=>alert(error.message)
     );
   }
+
 
   public getMakes(): void{
     this.vehicleService.getMakes().subscribe(
@@ -79,5 +80,20 @@ export class AddVehicleComponentComponent  implements OnInit{
       },(error:HttpErrorResponse)=>alert(error.message)
     );
   }
+
+
+  onMakeSelection(make: Make) {
+  
+
+    console.log("Does it do? "+ make.make)
+    console.log(this.models)
+ 
+    this.filteredModels=this.models.filter( model => model.make.make===make.make)
+ 
+    console.log(this.filteredModels)
+ 
+   }
+ 
+ 
 
 }

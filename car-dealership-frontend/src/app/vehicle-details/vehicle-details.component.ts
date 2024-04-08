@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Vehicle } from '../vehicle';
+import { Vehicle } from '../Entity/vehicle';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -44,13 +44,9 @@ export class VehicleDetailsComponent {
 
     //retrives observable vehichle
     this.vehicle$ = this.vehicleService.getVehicle(id);
-    console.log(this.vehicle$);
-
     this.vehicle$.subscribe(vehicle => {
-      this.uVehicle.emit(vehicle); // Emit the Vehicle object directly, Output wont work otherwise
-      console.log("INSIDE details", vehicle);
+      this.uVehicle.emit(vehicle); // Emit uVehicle event when the vehicle data is available
     });
-  } 
-
+  }
 
 }

@@ -12,14 +12,19 @@ public class User {
     private int userid;
 
     @Column
+    @Setter
     private String firstname;
     @Column
+    @Setter
     private String lastname;
     @Column
+    @Setter
     private String email;
     @Column
+    @Setter
     private String password;
     @Column
+    @Setter
     private String role;
 
 

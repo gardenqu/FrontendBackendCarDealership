@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet, Routes, provideRouter } from '@angular/router';
 import { VehicleServiceService } from '../vehicle-service.service';
-import { Vehicle } from '../vehicle';
+import { Vehicle } from '../Entity/vehicle';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { UpdateVehicleComponentComponent } from "../update-vehicle-component/update-vehicle-component.component";

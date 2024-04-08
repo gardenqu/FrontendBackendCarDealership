@@ -1,7 +1,7 @@
 import { NgFor, CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Vehicle } from '../vehicle';
+import { Vehicle } from '../Entity/vehicle';
 import { VehicleServiceService } from '../vehicle-service.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule, NgModel } from '@angular/forms';
@@ -18,13 +18,12 @@ export class VehicleListComponenetComponent implements OnInit {
   public vehicles:Vehicle[]=[];
   public newVehicles:Vehicle[]=[];
   public usedVehicles:Vehicle[]=[];
-  public featured:Vehicle[]=[]
 
   currentPage: number = 1;
   pageSize: number = 10; // Default page size
   order: string = 'asc'; // Default sorting order
   sortBy: string = 'model'; // Default sorting by model
-  searchQuery: string = '';
+  searchQuery: string = "";
 
   filteredVehicles: Vehicle[] = [];
   paginatedVehicles: Vehicle[] = [];
@@ -33,14 +32,17 @@ type: any;
   
   constructor(private vehicleService: VehicleServiceService) {} //allows for making request to backend
   ngOnInit(): void {
+    
     this.getVehicles()
     this.getNewVehicles()
     this.getUsedVehicles()
+    this.searchVehicles()
   }
 
   public getVehicles(): void{
     this.vehicleService.getVehicles()
     .subscribe(vehicles => this.vehicles = vehicles);
+    console.log(this.vehicles)
   }
 
   public getNewVehicles():void{
@@ -75,52 +77,49 @@ type: any;
     );
   }
 
-  searchVehicles(page: number, size: number, order: string, sortBy: string,type:string): void {
-    if(type==="new"){
-      this.filteredVehicles=this.newVehicles.filter(vehicle =>
-        vehicle.models.make.make.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        vehicle.models.modelname.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    }else if(type==="used"){
-      this.filteredVehicles=this.usedVehicles.filter(vehicle =>
-        vehicle.models.make.make.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        vehicle.models.modelname.toLowerCase().includes(this.searchQuery.toLowerCase()))
-
-    }else{
-    this.filteredVehicles = this.vehicles.filter(vehicle =>
-      vehicle.models.make.make.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      vehicle.models.modelname.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-  }
-
+  searchVehicles( page: number = 1, size: number = 10, order: string = 'asc', sortBy: string = 'make', type: string = 'all'): void {
+    console.log("Upon load");
     
+    // Filter vehicles based on type
+    if (type === 'new') {
+      this.filteredVehicles = this.newVehicles.slice(); // newVehicles contains default new vehicles
+    } else if (type === 'used') {
+      this.filteredVehicles = this.usedVehicles.slice(); // usedVehicles contains default used vehicles
+    } else {
+      this.filteredVehicles = this.vehicles.slice(); // vehicles contains default vehicles
+    }
+    
+    // Filter based on search query
+    this.filteredVehicles = this.filteredVehicles.filter(vehicle =>
+      vehicle.model.make.make.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      vehicle.model.modelname.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+
+    // Sort filtered vehicles
     if (sortBy === 'model') {
-      this.filteredVehicles.sort((a, b) => a.models.modelname.localeCompare(b.models.modelname));
+      this.filteredVehicles.sort((a, b) => a.model.modelname.localeCompare(b.model.modelname));
     } else if (sortBy === 'make') {
-      this.filteredVehicles.sort((a, b) => a.models.make.make.localeCompare(b.models.make.make));
+      this.filteredVehicles.sort((a, b) => a.model.make.make.localeCompare(b.model.make.make));
     } else if (sortBy === 'salesprice') {
       this.filteredVehicles.sort((a, b) => a.saleprice - b.saleprice);
     } else if (sortBy === 'msrp') {
       this.filteredVehicles.sort((a, b) => a.msrp - b.msrp);
     }
 
-    if (order === 'dec') {
+    // Reverse if order is descending
+    if (order === 'desc') {
       this.filteredVehicles.reverse();
-  
-  
-      const startIndex = (page - 1) * size;
-      const endIndex = Math.min(startIndex + size, this.filteredVehicles.length);
-      this.paginatedVehicles = this.filteredVehicles.slice(startIndex, endIndex);
-      
-      // Update current page and page size
-       this.currentPage = page;
-        this.pageSize = size;
+    }
 
+    // Paginate filtered vehicles
+    const startIndex = (page - 1) * size;
+    const endIndex = Math.min(startIndex + size, this.filteredVehicles.length);
+    this.vehicles = this.filteredVehicles.slice(startIndex, endIndex);
+
+    // Update current page and page size
+    this.currentPage = page;
+    this.pageSize = size;
   }
-
-
-  }
-
 
 
 

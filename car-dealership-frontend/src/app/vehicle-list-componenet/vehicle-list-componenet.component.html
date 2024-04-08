@@ -2,12 +2,12 @@
   <main>
   <div class="wrapper">
       <div class="gallery">
-        <a *ngFor="let vehicle of featured;" [routerLink]="['details/',vehicle.vin]" routerLinkActive="active">
+        <a *ngFor="let vehicle of newVehicles;" [routerLink]="['details/',vehicle.vin]" routerLinkActive="active">
           <div class="gallery__item">
             <img class="gallery__img" src="https://www.bootdey.com/image/350x280/20B2AA/000000" alt="Yosemite" />
             <div class="gallery__details">
-              <span class="moodel">{{vehicle.models.make.make}}</span>
-              <span>{{vehicle.models.modelname}}</span>
+              <span class="moodel">{{vehicle.model.make.make}}</span>
+              <span>{{vehicle.model.modelname}}</span>
               
             </div>
           </div>
@@ -16,32 +16,33 @@
     </div>
 
     <form class="search">
-      <select name="pageSize" [(ngModel)]="pageSize">
+      <select name="pageSize"  [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }">
         <option value="10">10</option>
         <option value="20">20</option>
       
       </select>
-      <select name="order" [(ngModel)]="order" >
+      <select name="order" [(ngModel)]="order"  [ngModelOptions]="{ standalone: true }" >
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
       </select>
-      <select name="sortBy" [(ngModel)]="sortBy">
+      <select name="sortBy" [(ngModel)]="sortBy" [ngModelOptions]="{ standalone: true }">
         <option value="model">Model</option>
         <option value="make">Make</option>
         <option value="salesprice">Price</option>
         <option value="msrp">MSRP</option>
         </select>
 
-        <select name="type" [(ngModel)]="type">
+        <select name="type" [(ngModel)]="type"  [ngModelOptions]="{ standalone: true }">
           <option value="all">All</option>
           <option value="new">New</option>
           <option value="used">Used</option>
         </select>
-      <input type="'search" (ngModelChange)="searchVehicles(1, pageSize, order, sortBy,type)">
+      <input type="search" name="searchQuery" [(ngModel)]="searchQuery"    [ngModelOptions]="{ standalone: true }" (keyup.enter)="searchVehicles(1, pageSize, order, sortBy, type)">
+       <!-- Button to trigger search action -->
+        <button type="button"  (click)="searchVehicles(1, pageSize, order, sortBy, type)">Search</button>
     
-    
+      </form>
 
-      
   
   <div class="container bootstrap snipets">
       <h1 class="text-center text-muted">Product catalog</h1>
@@ -49,14 +50,13 @@
         <div *ngFor="let vehicle of vehicles" class="col-xs-6 col-md-4">
           <div class="product tumbnail thumbnail-3"><a [routerLink]="['details/',vehicle.vin]" routerLinkActive="active"><img src="https://www.bootdey.com/image/350x280/FFB6C1/000000" alt=""></a>
             <div class="caption">
-              <h6>{{vehicle.models.make.make}}<span>{{vehicle.models.modelname}}</span></h6><span class="price">
-                {{vehicle.new}}</span><span class="mileage">{{vehicle.vehicleid}}</span>
+              <h6>{{vehicle.model.make.make}}<span>{{vehicle.model.modelname}}</span></h6><span class="price">
+                {{vehicle.saleprice}}</span><span class="mileage">{{vehicle.vehicleid}}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </form>
     </main>
     
   

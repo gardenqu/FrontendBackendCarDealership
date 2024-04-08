@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { PreloadAllModules, RouterLink, RouterLinkActive, RouterOutlet, provideRouter, withDebugTracing, withPreloading } from '@angular/router';
-import { Vehicle } from './vehicle';
+import { Vehicle } from './Entity/vehicle';
 import { VehicleServiceService } from './vehicle-service.service';
 import { NgFor, CommonModule } from '@angular/common';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';

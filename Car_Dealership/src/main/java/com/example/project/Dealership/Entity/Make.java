@@ -1,8 +1,11 @@
 package com.example.project.Dealership.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 public class Make {
@@ -19,11 +22,6 @@ public class Make {
     @Setter
     private String make;
 
-    @ManyToOne
-    @JoinColumn(name = "modelid")
-    @Getter
-    @Setter
-    private Models model;
 
 
 

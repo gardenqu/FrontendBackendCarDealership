@@ -1,14 +1,14 @@
-import { Component, Input, OnInit, input } from '@angular/core';
+import { Component, Input, OnInit, input, model } from '@angular/core';
 import { SingleVehicleComponentComponent } from "../single-vehicle-component/single-vehicle-component.component";
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { VehicleServiceService } from '../vehicle-service.service';
-import { Vehicle } from '../vehicle';
+import { Vehicle } from '../Entity/vehicle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule, NgIf } from '@angular/common';
 import { VehicleDetailsComponent } from "../vehicle-details/vehicle-details.component";
-import { Model } from '../model';
-import { Make } from '../make';
+import { Model } from '../Entity/model';
+import { Make } from '../Entity/make';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -27,18 +27,22 @@ export class UpdateVehicleComponentComponent  implements OnInit{
     oldVin!: string;
     isEditMode: boolean=true;
     models: Model[]=[];
+    filteredModels:Model[]=[]
     makes:Make[]= [];
+    selectedMake!: Make;
     constructor(private route: ActivatedRoute,private  vehicleService: VehicleServiceService,private vRoute:Router) { 
         
     }
 
      
     ngOnInit(): void {
-        this.getMakes()
-        this.getModels()
-    
-        console.log(this.uVehicle)
-        this.oldVin=this.route.snapshot.paramMap.get('vin') ?? 'null';
+      
+        this.oldVin = this.route.snapshot.paramMap.get('vin') ?? 'null';
+
+  
+      this.getMakes();
+      this.getModels();
+  
 
     }
     
@@ -80,6 +84,7 @@ public editVehicle(vin:string, vehicle:Vehicle){
   }
 
   public getModels(): void{
+  
     this.vehicleService.getModels().subscribe(
       (response: Model[])=>{
         this.models=response;
@@ -87,6 +92,21 @@ public editVehicle(vin:string, vehicle:Vehicle){
       },(error:HttpErrorResponse)=>alert(error.message)
     );
   }
+
+
+
+  public getFilteresModels(make:Make): Model[]{
+
+    console.log("The Make: "+ make.make)
+
+  
+
+    console.log(this.models)
+    return this.models
+
+  }
+
+
 
   public getMakes(): void{
     this.vehicleService.getMakes().subscribe(
@@ -99,6 +119,18 @@ public editVehicle(vin:string, vehicle:Vehicle){
   }
 
 
+
+  onMakeSelection(make: Make) {
+  
+
+   console.log("Does it do? "+ make.make)
+   console.log(this.models)
+
+   this.filteredModels=this.models.filter( model => model.make.make===make.make)
+
+   console.log(this.filteredModels)
+
+  }
 
 
 

@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Vehicle } from './vehicle';
+import { Vehicle } from './Entity/vehicle';
 import { environment } from '../environments/environment.development';
-import { Model } from './model';
-import { Make } from './make';
+import { Model } from './Entity/model';
+import { Make } from './Entity/make';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class VehicleServiceService {
 
   public getVehicles(): Observable<Vehicle[]>{
    
-    return this.http.get<Vehicle[]>(`${this.apiService}/search`)
+    return this.http.get<Vehicle[]>(`${this.apiService}/inventory/search`)
 
   }
 
@@ -36,14 +36,14 @@ export class VehicleServiceService {
   public getNewVehicles(): Observable<Vehicle[]>{
 
   // Make HTTP GET request with parameters
-  return this.http.get<Vehicle[]>(`${this.apiService}/new`)
+  return this.http.get<Vehicle[]>(`${this.apiService}/inventory/new`)
 
   }
 
   public getUsedVehicles(): Observable<Vehicle[]>{
    
     // Make HTTP GET request with parameters
-    return this.http.get<Vehicle[]>(`${this.apiService}/used`)
+    return this.http.get<Vehicle[]>(`${this.apiService}/inventory/used`)
 
   }
 

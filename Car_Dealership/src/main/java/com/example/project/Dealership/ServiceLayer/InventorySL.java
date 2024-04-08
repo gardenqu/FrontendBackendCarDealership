@@ -78,7 +78,7 @@ public Vehicle updateVehicleInformation(String vin, Vehicle vehicle){
     Vehicle beforeUpdate= vehicleRepo.getVehicleByVin(vin);
 
     beforeUpdate.setVin(vehicle.getVin());
-    beforeUpdate.setModels(vehicle.getModels());
+    beforeUpdate.setModel(vehicle.getModel());
     beforeUpdate.setColor(vehicle.getColor());
     beforeUpdate.setNew(vehicle.isNew());
     beforeUpdate.setBodystyle(vehicle.getBodystyle());

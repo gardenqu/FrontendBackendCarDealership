@@ -1,39 +1,54 @@
 package com.example.project.Dealership.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
 public class Purchase {
 
+    @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column
+    @Setter
     private int purchaseid;
     @Column
+    @Setter
     private String name;
     @Column
+    @Setter
     private String phone;
     @Column
+    @Setter
     private String email;
     @Column
+    @Setter
     private String street1;
     @Column
+    @Setter
     private String street2;
     @Column
+    @Setter
     private String state;
     @Column
+    @Setter
     private String city;
     @Column
+    @Setter
     private String zipcode;
     @Column
+    @Setter
     private String purchasedate;
     @Column
+    @Setter
     private String purchastype;
-    @Column
+    @Setter
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userid")
     private User user;
 
-    @Column
+    @Setter
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicleid")
     private Vehicle vehicle;

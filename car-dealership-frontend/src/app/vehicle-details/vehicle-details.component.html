@@ -1,5 +1,5 @@
 <section class="panel">
-    <div *ngIf="vehicle$ | async as vehicle"class="panel-body">
+    <div *ngIf="vehicle$ | async as vehicle" class="panel-body">
         <div class="col-md-6">
             <div class="pro-img-details" >
                 <img src="https://www.bootdey.com/image/550x380/FFB6C1/000000" alt="">
@@ -33,14 +33,17 @@
         <div  class="col-md-6">
             <h4  class="pro-d-title">
                 <a  href="#" class="">
-                  {{ vehicle.models.make.make }}
+                  {{ vehicle.model.make.make}}
+                </a>
+                <a  href="#" class="">
+                  {{ vehicle.model.modelname}}
                 </a>
             </h4>
             <p>
                 {{vehicle.description}}
             </p>
             <div class="product_meta">
-                <span class="posted_in"> <strong>Categories:</strong> <a rel="tag" href="#">{{vehicle.models.make.make}}</a>, <a rel="tag" href="#">{{vehicle.color}}</a>, <a rel="tag" href="#">{{vehicle.models.modelname}}</a></span>
+                <span class="posted_in"> <strong>Categories:</strong> <a rel="tag" href="#">{{vehicle.model.make.make}}</a>, <a rel="tag" href="#">{{vehicle.color}}</a>, <a rel="tag" href="#">{{vehicle.model.make.make}}</a></span>
                 <span class="tagged_as"><strong>Tags:</strong> <a rel="tag" href="#" *ngIf="vehicle.new==true; else usedContent">New</a><ng-template #usedContent><a  rel="tag" href="#">Used</a></ng-template> </span>
             </div>
             <div class="m-bot15"> <strong>Price : </strong> <span class="price">{{vehicle.saleprice}}</span>  <span  class ="bought" *ngIf="vehicle.issold==true">{{vehicle.saleprice}}SOLD </span></div>

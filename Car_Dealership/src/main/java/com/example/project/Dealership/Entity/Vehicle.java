@@ -23,7 +23,7 @@ public class Vehicle {
         @ManyToOne
         @JoinColumn(name = "modelid")
         @Setter
-        private Models models;
+        private Models model;
 
         @Column(nullable = false)
         @Setter

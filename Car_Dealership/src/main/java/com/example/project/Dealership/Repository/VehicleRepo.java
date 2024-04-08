@@ -14,15 +14,15 @@ public interface VehicleRepo extends JpaRepository<Vehicle, Integer> {
 
 
    /* @Query(value = "SELECT * FROM Vehicle v"
-            + " Inner join Model mo on v.ModelId = mo.ModelId"
-            + " Inner join Make ma on mo.MakeId = ma.MakeId"
+            + " Inner join Make ma on v.MakeId = mo.MakeId"
+            + " Inner join Model mo on ma.ModelId = mo.ModelId"
             + " WHERE"
             + " Type LIKE ?1"
-            + " AND mo.Modelname = ?2"
+            + " AND mo.Makename = ?2"
             + " AND isSold = ?3"
             + " AND salesprice < ?4;", nativeQuery = true)
 
-    List<Vehicle> vehicleSearchBy(String type, String modelname, boolean isSold,int salesPrice);*/
+    List<Vehicle> vehicleSearchBy(String type, String makename, boolean isSold,int salesPrice);*/
 
 
     @Query(value = "SELECT * FROM Vehicle v"

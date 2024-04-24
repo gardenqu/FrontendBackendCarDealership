@@ -1,0 +1,15 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar a {
+    padding: 10px;
+  }
+  
+  .navbarRight {
+    margin-left: auto; /* push the .navbarRight to the right */
+  }
+  
+ 

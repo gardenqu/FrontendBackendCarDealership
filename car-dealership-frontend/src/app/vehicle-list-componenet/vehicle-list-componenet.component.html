@@ -1,10 +1,10 @@
 
   <main>
-  <div class="wrapper">
+
       <div class="gallery">
-        <a *ngFor="let vehicle of newVehicles;" [routerLink]="['details/',vehicle.vin]" routerLinkActive="active">
+        <a *ngFor="let vehicle of getFeaturedVehicles();" [routerLink]="['details/',vehicle.vin]" routerLinkActive="active">
           <div class="gallery__item">
-            <img class="gallery__img" src="https://www.bootdey.com/image/350x280/20B2AA/000000" alt="Yosemite" />
+            <img src={{vehicle.photo}} alt="Yosemite" />
             <div class="gallery__details">
               <span class="moodel">{{vehicle.model.make.make}}</span>
               <span>{{vehicle.model.modelname}}</span>
@@ -13,9 +13,13 @@
           </div>
         </a>
       </div>
-    </div>
+  
 
-    <form class="search">
+   
+  
+  <div class="product_container">
+      <h1>Product Catalog</h1>
+       <form class="search">
       <select name="pageSize"  [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }">
         <option value="10">10</option>
         <option value="20">20</option>
@@ -37,26 +41,24 @@
           <option value="new">New</option>
           <option value="used">Used</option>
         </select>
-      <input type="search" name="searchQuery" [(ngModel)]="searchQuery"    [ngModelOptions]="{ standalone: true }" (keyup.enter)="searchVehicles(1, pageSize, order, sortBy, type)">
+      <input type="search" name="searchQuery" [(ngModel)]="searchQuery"    [ngModelOptions]="{ standalone: true }" (keyup.enter)="searchVehicles()">
        <!-- Button to trigger search action -->
-        <button type="button"  (click)="searchVehicles(1, pageSize, order, sortBy, type)">Search</button>
+        <button type="button"  (click)="searchVehicles()">Search</button>
     
       </form>
 
-  
-  <div class="container bootstrap snipets">
-      <h1 class="text-center text-muted">Product catalog</h1>
-      <div class="row flow-offset-1">
-        <div *ngFor="let vehicle of vehicles" class="col-xs-6 col-md-4">
-          <div class="product tumbnail thumbnail-3"><a [routerLink]="['details/',vehicle.vin]" routerLinkActive="active"><img src="https://www.bootdey.com/image/350x280/FFB6C1/000000" alt=""></a>
-            <div class="caption">
+      <div class="catalog_list">
+        <div *ngFor="let vehicle of vehicles" >
+          <div class="catalog_item" >
+            <a [routerLink]="['details/',vehicle.vin]" routerLinkActive="active"><img src={{vehicle.photo}} alt=""></a>
+            <div class="catalog_details">
               <h6>{{vehicle.model.make.make}}<span>{{vehicle.model.modelname}}</span></h6><span class="price">
                 {{vehicle.saleprice}}</span><span class="mileage">{{vehicle.vehicleid}}</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      </div>
     </main>
     
   

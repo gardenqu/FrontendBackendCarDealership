@@ -15,19 +15,20 @@ import { FormsModule, NgModel } from '@angular/forms';
 })
 export class VehicleListComponenetComponent implements OnInit {
 
-  public vehicles:Vehicle[]=[];
-  public newVehicles:Vehicle[]=[];
-  public usedVehicles:Vehicle[]=[];
-
-  currentPage: number = 1;
-  pageSize: number = 10; // Default page size
-  order: string = 'asc'; // Default sorting order
-  sortBy: string = 'model'; // Default sorting by model
-  searchQuery: string = "";
-
+  vehicles:Vehicle[]=[];
+   newVehicles:Vehicle[]=[];
+  usedVehicles:Vehicle[]=[];
+  tempList:Vehicle[]=[];
   filteredVehicles: Vehicle[] = [];
-  paginatedVehicles: Vehicle[] = [];
-type: any;
+
+  currentPage: number=1
+  pageSize: number =10;
+  order: string ="asc"
+  sortBy: string="Model"
+  searchQuery: string = "";
+  type:String="all"
+
+  
 
   
   constructor(private vehicleService: VehicleServiceService) {} //allows for making request to backend
@@ -36,13 +37,17 @@ type: any;
     this.getVehicles()
     this.getNewVehicles()
     this.getUsedVehicles()
-    this.searchVehicles()
+    
   }
 
   public getVehicles(): void{
     this.vehicleService.getVehicles()
     .subscribe(vehicles => this.vehicles = vehicles);
     console.log(this.vehicles)
+  }
+
+  public getFeaturedVehicles():Vehicle[]{
+    return this.newVehicles.filter(vehicle => vehicle.featured==true)
   }
 
   public getNewVehicles():void{
@@ -57,17 +62,6 @@ type: any;
   }
 
 
-  public getFeaturedVehicles(page: number, size: number, order: string, sortBy: string):void{
-    this.vehicleService.getFeatured().subscribe( 
-      (response: Vehicle[])=>{
-        this.newVehicles=response;
-        console.log(this.newVehicles)
-      
-      },(error:HttpErrorResponse)=>alert(error.message)
-    );
-
-  }
-
   public getUsedVehicles():void{
     this.vehicleService.getUsedVehicles().subscribe(
       (response: Vehicle[])=>{
@@ -77,16 +71,20 @@ type: any;
     );
   }
 
-  searchVehicles( page: number = 1, size: number = 10, order: string = 'asc', sortBy: string = 'make', type: string = 'all'): void {
+  searchVehicles( ): void {
     console.log("Upon load");
     
     // Filter vehicles based on type
-    if (type === 'new') {
-      this.filteredVehicles = this.newVehicles.slice(); // newVehicles contains default new vehicles
-    } else if (type === 'used') {
-      this.filteredVehicles = this.usedVehicles.slice(); // usedVehicles contains default used vehicles
+    if (this.type === 'new') {
+      this.filteredVehicles = this.newVehicles; // newVehicles contains default new vehicles
+    } else if (this.type === 'used') {
+      this.filteredVehicles = this.usedVehicles; // usedVehicles contains default used vehicles
     } else {
-      this.filteredVehicles = this.vehicles.slice(); // vehicles contains default vehicles
+      if(this.tempList.length==0){
+        this.tempList=this.vehicles
+      }
+      this.vehicles=this.tempList
+      this.filteredVehicles = this.vehicles; // vehicles contains default vehicles
     }
     
     // Filter based on search query
@@ -96,30 +94,30 @@ type: any;
     );
 
     // Sort filtered vehicles
-    if (sortBy === 'model') {
+    if (this.sortBy === 'model') {
       this.filteredVehicles.sort((a, b) => a.model.modelname.localeCompare(b.model.modelname));
-    } else if (sortBy === 'make') {
+    } else if (this.sortBy === 'make') {
       this.filteredVehicles.sort((a, b) => a.model.make.make.localeCompare(b.model.make.make));
-    } else if (sortBy === 'salesprice') {
+    } else if (this.sortBy === 'salesprice') {
       this.filteredVehicles.sort((a, b) => a.saleprice - b.saleprice);
-    } else if (sortBy === 'msrp') {
+    } else if (this.sortBy === 'msrp') {
       this.filteredVehicles.sort((a, b) => a.msrp - b.msrp);
     }
 
     // Reverse if order is descending
-    if (order === 'desc') {
+    if (this.order === 'desc') {
       this.filteredVehicles.reverse();
     }
 
+    console.log(typeof +this.pageSize)
+
     // Paginate filtered vehicles
-    const startIndex = (page - 1) * size;
-    const endIndex = Math.min(startIndex + size, this.filteredVehicles.length);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + +this.pageSize;
     this.vehicles = this.filteredVehicles.slice(startIndex, endIndex);
 
-    // Update current page and page size
-    this.currentPage = page;
-    this.pageSize = size;
   }
+  
 
 
 

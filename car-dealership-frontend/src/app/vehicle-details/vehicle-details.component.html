@@ -2,7 +2,7 @@
     <div *ngIf="vehicle$ | async as vehicle" class="panel-body">
         <div class="col-md-6">
             <div class="pro-img-details" >
-                <img src="https://www.bootdey.com/image/550x380/FFB6C1/000000" alt="">
+                <img src={{vehicle.photo}} alt="">
             </div>
             <div   class="description">
               <table>

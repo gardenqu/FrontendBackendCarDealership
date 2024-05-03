@@ -2,15 +2,17 @@ package com.example.project.Dealership.Repository;
 
 import com.example.project.Dealership.Entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface VehicleRepo extends JpaRepository<Vehicle, Integer> {
+public interface VehicleRepo extends PagingAndSortingRepository<Vehicle, Integer>, JpaRepository<Vehicle, Integer>, JpaSpecificationExecutor<Vehicle> {
 
 
    /* @Query(value = "SELECT * FROM Vehicle v"

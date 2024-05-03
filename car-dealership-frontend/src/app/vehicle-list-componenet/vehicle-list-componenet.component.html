@@ -20,6 +20,13 @@
   <div class="product_container">
       <h1>Product Catalog</h1>
        <form class="search">
+
+        <select  name="pageNum"  [(ngModel)]="pageNum" [ngModelOptions]="{ standalone: true }">
+          <option *ngFor="let page of pageRange"   value="{{page-1}}">{{page}}</option>
+  
+        </select>
+
+
       <select name="pageSize"  [(ngModel)]="pageSize" [ngModelOptions]="{ standalone: true }">
         <option value="10">10</option>
         <option value="20">20</option>
@@ -31,13 +38,13 @@
       </select>
       <select name="sortBy" [(ngModel)]="sortBy" [ngModelOptions]="{ standalone: true }">
         <option value="model">Model</option>
-        <option value="make">Make</option>
-        <option value="salesprice">Price</option>
+        <option value="model.make.make">Make</option>
+        <option value="saleprice">Price</option>
         <option value="msrp">MSRP</option>
         </select>
 
         <select name="type" [(ngModel)]="type"  [ngModelOptions]="{ standalone: true }">
-          <option value="all">All</option>
+          <option value="">All</option>
           <option value="new">New</option>
           <option value="used">Used</option>
         </select>

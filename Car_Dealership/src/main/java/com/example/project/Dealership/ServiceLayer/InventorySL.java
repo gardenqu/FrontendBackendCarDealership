@@ -8,10 +8,13 @@ import com.example.project.Dealership.Repository.ModelRepo;
 import com.example.project.Dealership.Repository.VehicleRepo;
 import com.example.project.Dealership.Util.NotFoundException;
 import com.example.project.Dealership.Util.Pages;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +30,40 @@ public class InventorySL {
     @Autowired
     ModelRepo modelRepo;
 
-    public List<Vehicle> getAllVehicles(){
+    /*public List<Vehicle> getAllVehicles(){
 
 
         return vehicleRepo.findAll();
+    }*/
+
+
+    public Page<Vehicle> getSearchedVehicles(int pageNum, int size, String order, String sortBy, String isNew, String searchQuery) {
+        Pageable paging = getSortOrder(pageNum, size, order, sortBy);
+
+        Specification<Vehicle> spec = (root, query, cb) -> {
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (isNew != null && !isNew.isEmpty()) {
+                boolean isNewBoolean = Boolean.parseBoolean(isNew);
+                predicates.add(cb.equal(root.get("isNew"), isNewBoolean));
+            }
+
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                String likePattern = "%" + searchQuery.toLowerCase() + "%";
+                Predicate makePredicate = cb.like(cb.lower(root.get("model").get("make").get("make")), likePattern);
+                Predicate modelPredicate = cb.like(cb.lower(root.get("model").get("modelname")), likePattern);
+                predicates.add(cb.or(makePredicate, modelPredicate));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return vehicleRepo.findAll(spec, paging);
     }
+
+
+
 
     public List<Vehicle>GetSearchedVehicles(String isNew){
 

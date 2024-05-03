@@ -13,11 +13,22 @@ export class VehicleServiceService {
 
   constructor(private http:HttpClient) {}
   private apiService=environment.apiUrl
+  vehicleMap!: Map<number, Vehicle[]>;
 
-  public getVehicles(): Observable<Vehicle[]>{
-   
-    return this.http.get<Vehicle[]>(`${this.apiService}/inventory/search`)
+  getListOfVehicles(pageNum: number, size: number, order: string, sortBy: string, isNew: string, searchQuery:string ): Observable<Map<number,Vehicle[]>> {
+    let params = new HttpParams()
+      .set('pageNum', pageNum.toString())
+      .set('size', size.toString())
+      .set('order', order)
+      .set('sortBy', sortBy)
+      .set('isNew', isNew)
+      .set('searchQuery', searchQuery); // search for make and model
+      
 
+
+      
+
+    return this.http.get<Map<number,Vehicle[]>>(`${this.apiService}/inventory/search`, { params });
   }
 
   public getModels(): Observable<Model[]>{

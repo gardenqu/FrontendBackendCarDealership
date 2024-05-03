@@ -9,9 +9,12 @@ import com.example.project.Dealership.Util.Constants;
 import com.example.project.Dealership.Util.NotFoundException;
 import com.example.project.Dealership.Util.Pages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200/")
@@ -31,12 +34,12 @@ public class InventoryController {
 
 
 
-    @GetMapping("all")
+   /* @GetMapping("all")
     public List<Vehicle> getListOfVehicles(
     ){
 
         return inventorySL.getAllVehicles();
-    }
+    }*/
 
     @GetMapping("makes")
     public List<Make> getMakes(){
@@ -52,10 +55,30 @@ public class InventoryController {
         return inventorySL.getModels();
     }
 
-    @GetMapping("search")
+    /*@GetMapping("search")
     public List<Vehicle> searchVehicles(){
 
         return inventorySL.getAllVehicles();
+    }*/
+
+    @GetMapping("search")
+    public Map<Integer,List<Vehicle>> getListOfVehicles(
+            @RequestParam(defaultValue = Pages.DEFAULTPAGENUMBER) int pageNum,
+            @RequestParam(defaultValue = Pages.DEFAULTPAGESIZE) int size,
+            @RequestParam(defaultValue = Pages.ASC) String order,
+            @RequestParam(defaultValue = Pages.SORTBYSALEPRICE) String sortBy,
+            @RequestParam(defaultValue = "") String isNew,
+            @RequestParam(defaultValue = "") String searchQuery
+
+    ){
+        //hold page total and vehicle list
+        Map<Integer,List<Vehicle>> items= new HashMap<>();
+
+        Page<Vehicle> vehicles=inventorySL.getSearchedVehicles(pageNum,size,order,sortBy,isNew,searchQuery);
+        items.put(vehicles.getTotalPages(),vehicles.toList());
+
+                      //int pageNum, int size, String order, String sortBy, String isNew, String make, St1626ring model
+        return items;
     }
 
 

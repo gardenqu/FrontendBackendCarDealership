@@ -4,7 +4,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Vehicle } from '../Entity/vehicle';
 import { VehicleServiceService } from '../vehicle-service.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FormsModule, NgModel } from '@angular/forms';
+import { FormsModule, NgModel, NumberValueAccessor } from '@angular/forms';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vehicle-list-componenet',
@@ -15,18 +16,24 @@ import { FormsModule, NgModel } from '@angular/forms';
 })
 export class VehicleListComponenetComponent implements OnInit {
 
+  
   vehicles:Vehicle[]=[];
-   newVehicles:Vehicle[]=[];
+  newVehicles:Vehicle[]=[];
   usedVehicles:Vehicle[]=[];
   tempList:Vehicle[]=[];
   filteredVehicles: Vehicle[] = [];
 
-  currentPage: number=1
-  pageSize: number =10;
+
+  pageNum: number=0
+  pageSize: number =10
+  pageRange: number[] = [];
   order: string ="asc"
   sortBy: string="Model"
   searchQuery: string = "";
-  type:String="all"
+  type:string=""
+  make:string=""
+  model:string=""
+  
 
   
 
@@ -34,20 +41,9 @@ export class VehicleListComponenetComponent implements OnInit {
   constructor(private vehicleService: VehicleServiceService) {} //allows for making request to backend
   ngOnInit(): void {
     
-    this.getVehicles()
+    this.searchVehicles()
     this.getNewVehicles()
-    this.getUsedVehicles()
     
-  }
-
-  public getVehicles(): void{
-    this.vehicleService.getVehicles()
-    .subscribe(vehicles => this.vehicles = vehicles);
-    console.log(this.vehicles)
-  }
-
-  public getFeaturedVehicles():Vehicle[]{
-    return this.newVehicles.filter(vehicle => vehicle.featured==true)
   }
 
   public getNewVehicles():void{
@@ -61,64 +57,31 @@ export class VehicleListComponenetComponent implements OnInit {
 
   }
 
-
-  public getUsedVehicles():void{
-    this.vehicleService.getUsedVehicles().subscribe(
-      (response: Vehicle[])=>{
-        this.usedVehicles=response;
-      
-      },(error:HttpErrorResponse)=>alert(error.message)
-    );
+  public getFeaturedVehicles():Vehicle[]{
+    return this.newVehicles.filter(vehicle => vehicle.featured==true)
   }
 
-  searchVehicles( ): void {
-    console.log("Upon load");
-    
-    // Filter vehicles based on type
-    if (this.type === 'new') {
-      this.filteredVehicles = this.newVehicles; // newVehicles contains default new vehicles
-    } else if (this.type === 'used') {
-      this.filteredVehicles = this.usedVehicles; // usedVehicles contains default used vehicles
-    } else {
-      if(this.tempList.length==0){
-        this.tempList=this.vehicles
-      }
-      this.vehicles=this.tempList
-      this.filteredVehicles = this.vehicles; // vehicles contains default vehicles
-    }
-    
-    // Filter based on search query
-    this.filteredVehicles = this.filteredVehicles.filter(vehicle =>
-      vehicle.model.make.make.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      vehicle.model.modelname.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
 
-    // Sort filtered vehicles
-    if (this.sortBy === 'model') {
-      this.filteredVehicles.sort((a, b) => a.model.modelname.localeCompare(b.model.modelname));
-    } else if (this.sortBy === 'make') {
-      this.filteredVehicles.sort((a, b) => a.model.make.make.localeCompare(b.model.make.make));
-    } else if (this.sortBy === 'salesprice') {
-      this.filteredVehicles.sort((a, b) => a.saleprice - b.saleprice);
-    } else if (this.sortBy === 'msrp') {
-      this.filteredVehicles.sort((a, b) => a.msrp - b.msrp);
-    }
 
-    // Reverse if order is descending
-    if (this.order === 'desc') {
-      this.filteredVehicles.reverse();
-    }
 
-    console.log(typeof +this.pageSize)
 
-    // Paginate filtered vehicles
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + +this.pageSize;
-    this.vehicles = this.filteredVehicles.slice(startIndex, endIndex);
-
-  }
+  public searchVehicles(): void {
+    this.vehicleService.getListOfVehicles(this.pageNum, this.pageSize, this.order, this.sortBy, this.type, this.searchQuery)
+      .subscribe((value: Map<number, Vehicle[]>) => {
+        const totalPages = Object.keys(value)[0]; // Assuming total pages is the first key
+        let vehicles = Object.values(value)[0]; // Convert totalPages to number
   
-
+        // Update component properties
+        if (vehicles !== undefined) {
+          this.pageRange =  Array.from({ length: +totalPages }, (_, i) => i + 1); //sets pageRange to an array using the total pages
+          console.log(this.pageRange)
+          this.vehicles = vehicles;
+          console.log( vehicles);
+        } else {
+          console.error("Received undefined vehicles from the API.");
+        }
+      });
+  }
 
 
 

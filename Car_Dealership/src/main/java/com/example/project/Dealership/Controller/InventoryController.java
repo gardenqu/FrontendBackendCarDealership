@@ -34,12 +34,12 @@ public class InventoryController {
 
 
 
-   /* @GetMapping("all")
-    public List<Vehicle> getListOfVehicles(
+    @GetMapping("/basicauth")
+    public String feedback(
     ){
 
-        return inventorySL.getAllVehicles();
-    }*/
+        return "You are authenticated ";
+    }
 
     @GetMapping("makes")
     public List<Make> getMakes(){

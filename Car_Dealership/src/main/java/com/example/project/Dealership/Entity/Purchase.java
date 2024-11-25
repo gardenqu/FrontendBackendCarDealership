@@ -46,7 +46,7 @@ public class Purchase {
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userid")
-    private User user;
+    private UserEntity userEntity;
 
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)

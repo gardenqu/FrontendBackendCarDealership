@@ -2,6 +2,7 @@ package com.example.project.Dealership;
 
 import com.example.project.Dealership.Entity.Make;
 import com.example.project.Dealership.Entity.Vehicle;
+import com.example.project.Dealership.Entity.VehicleDTO;
 import com.example.project.Dealership.ServiceLayer.InventorySL;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -26,7 +27,7 @@ class DealershipApplicationTests {
 	void contextLoads() throws JSONException {
 
 
-		Page<Vehicle> vehiclesPage = inventorySL.getSearchedVehicles(1, 6, "asc", "saleprice", "true", "");
+		Page<VehicleDTO> vehiclesPage = inventorySL.getSearchedVehicles(1, 6, "asc", "saleprice", "true", "");
 		System.out.println(vehiclesPage);
 // Convert Page<Vehicle> to JSON
 		//Gson gson = new Gson();

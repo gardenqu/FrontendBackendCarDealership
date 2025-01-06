@@ -1,8 +1,7 @@
 package com.example.project.Dealership.Controller;
 
-import com.example.project.Dealership.Entity.Make;
-import com.example.project.Dealership.Entity.Models;
-import com.example.project.Dealership.Entity.Vehicle;
+import com.example.project.Dealership.Entity.*;
+import com.example.project.Dealership.Repository.UserEntityRepo;
 import com.example.project.Dealership.Repository.VehicleRepo;
 import com.example.project.Dealership.ServiceLayer.InventorySL;
 import com.example.project.Dealership.Util.Constants;
@@ -10,11 +9,15 @@ import com.example.project.Dealership.Util.NotFoundException;
 import com.example.project.Dealership.Util.Pages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200/")
@@ -26,6 +29,9 @@ public class InventoryController {
 
     @Autowired
     VehicleRepo vr;
+
+    @Autowired
+    UserEntityRepo ur;
 
     @GetMapping("hello")
     public String hello(){
@@ -62,28 +68,29 @@ public class InventoryController {
     }*/
 
     @GetMapping("search")
-    public Map<Integer,List<Vehicle>> getListOfVehicles(
+    public Map<Integer, List<VehicleDTO>> getListOfVehicles(
             @RequestParam(defaultValue = Pages.DEFAULTPAGENUMBER) int pageNum,
             @RequestParam(defaultValue = Pages.DEFAULTPAGESIZE) int size,
             @RequestParam(defaultValue = Pages.ASC) String order,
             @RequestParam(defaultValue = Pages.SORTBYSALEPRICE) String sortBy,
             @RequestParam(defaultValue = "") String isNew,
             @RequestParam(defaultValue = "") String searchQuery
+    ) {
+        // Hold page total and vehicle list
+        Map<Integer, List<VehicleDTO>> items = new HashMap<>();
 
-    ){
-        //hold page total and vehicle list
-        Map<Integer,List<Vehicle>> items= new HashMap<>();
+        // Get the Page of VehicleDTO objects directly
+        Page<VehicleDTO> vehicleDTOsPage = inventorySL.getSearchedVehicles(pageNum, size, order, sortBy, isNew, searchQuery);
 
-        Page<Vehicle> vehicles=inventorySL.getSearchedVehicles(pageNum,size,order,sortBy,isNew,searchQuery);
-        items.put(vehicles.getTotalPages(),vehicles.toList());
+        // Convert the list of VehicleDTOs to a list
+        items.put(vehicleDTOsPage.getTotalPages(), vehicleDTOsPage.getContent());
 
-                      //int pageNum, int size, String order, String sortBy, String isNew, String make, St1626ring model
         return items;
     }
 
 
     @GetMapping("new")
-    public List<Vehicle> getNewVehicles(
+    public List<VehicleDTO> getNewVehicles(
             @RequestParam(defaultValue = Constants.NEW) String isNew){
 
 
@@ -91,72 +98,76 @@ public class InventoryController {
     }
 
     @GetMapping("used")
-    public List<Vehicle> getUsedVehicles( @RequestParam(defaultValue = Constants.USED) String isNew
+    public List<VehicleDTO> getUsedVehicles( @RequestParam(defaultValue = Constants.USED) String isNew
     ) {
         return inventorySL.GetSearchedVehicles(isNew);
     }
 
     @GetMapping("details/{id}")
-public Vehicle getVehicle(@PathVariable String id){
+    public ResponseEntity<VehicleDTO> getVehicle(@PathVariable String id) {
         System.out.println(id);
-        Vehicle vehicle=inventorySL.getVehicle(id);
 
-        if(vehicle==null) throw new NotFoundException("Vehicle of vin "+ id+ " is not found please try again with another vin number");
+        // Get the Optional<VehicleDTO> from the service layer
+        Optional<VehicleDTO> vehicleOptional = inventorySL.getVehicle(id);
 
-        return vehicle;
+        // If the vehicle is not found, throw NotFoundException
+        VehicleDTO vehicleDTO = vehicleOptional.orElseThrow(() -> new NotFoundException("Vehicle of vin " + id + " is not found, please try again with another vin number"));
 
-        
-
+        // Return the found VehicleDTO with HTTP status 200 OK
+        return ResponseEntity.ok(vehicleDTO);
     }
 
-    @GetMapping("featured")
-    public List<Vehicle> getFeatured(){
 
-       return inventorySL.getFeatured();
+
+    @GetMapping("featured")
+    public List<Vehicle> getFeatured() {
+        return inventorySL.getFeatured();
     }
 
     @PostMapping("addVehicle")
-    public Vehicle addVehicle(@RequestBody Vehicle vehicle){
-
+    public Vehicle addVehicle(@RequestBody Vehicle vehicle, Principal principal) {
         System.out.println("Add Vehicle");
 
+        if (vehicle == null) throw new NotFoundException("Vehicle is blank");
 
+        UserEntity currentUser = ur.findByEmail(principal.getName())
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        if(vehicle==null) throw new NotFoundException("Vehicle is blank");
-
-
-
-        return inventorySL.addVehicleToDB(vehicle);
+        return inventorySL.addVehicleToDB(vehicle, currentUser)
+                .orElseThrow(() -> new NotFoundException("Failed to add vehicle"));
     }
 
     @DeleteMapping("details/{id}")
-    public String removeVehicle(@PathVariable String id){
+    public String removeVehicle(@PathVariable String id) {
+        System.out.println("Vehicle Deleted");
 
-        System.out.println("Vehicle Deleleted");
+        // Get the Optional<Vehicle> from the service layer
+        Optional<VehicleDTO> vehicleOptional = inventorySL.getVehicle(id);
 
-        Vehicle vehicle=inventorySL.getVehicle(id);
-
-        if(vehicle==null) throw new NotFoundException("Vehicle of vin "+ id+ " is not found please try again with another vin number");
+        // If the vehicle is not found, throw NotFoundException
+        vehicleOptional.orElseThrow(() -> new NotFoundException("Vehicle of vin " + id + " is not found, please try again with another vin number"));
 
         inventorySL.removeVehicle(id);
 
         return "{ \"message\": \"Vehicle has been deleted\" }";
-
     }
 
     @PutMapping("details/{id}")
-    public Vehicle updateVehicleInformation( @PathVariable String id, @RequestBody Vehicle vehicle){
+    public VehicleDTO updateVehicleInformation(@PathVariable String id, @RequestBody VehicleDTO vehicleDTO) {
+        // Get the Optional<Vehicle> from the service layer
+        Optional<VehicleDTO> vehicleOptional = inventorySL.getVehicle(id);
 
+        // If the vehicle is not found, throw NotFoundException
+        VehicleDTO vehicleToBeUpdated = vehicleOptional.orElseThrow(() -> new NotFoundException("Vehicle of vin " + id + " is not found, please try again with another vin number"));
 
-        Vehicle vehicleToBeUpdated=inventorySL.getVehicle(id);
+        // Map the VehicleDTO back to a Vehicle entity (you can add a method for this conversion if necessary)
+        Vehicle vehicle = inventorySL.convertToEntity(vehicleDTO);
 
-        if(vehicleToBeUpdated==null) throw new NotFoundException("Vehicle of vin "+ id+ " is not found please try again with another vin number");
-
-
-       return inventorySL.updateVehicleInformation(id,vehicle);
-
-
+        // Update the vehicle
+        return inventorySL.convertToDTO(inventorySL.updateVehicleInformation(id, vehicle).orElseThrow(() -> new NotFoundException("Failed to update vehicle with vin " + id)));
     }
+
+
 
 
 

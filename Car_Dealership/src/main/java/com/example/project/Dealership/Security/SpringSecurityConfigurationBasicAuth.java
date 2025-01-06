@@ -41,6 +41,7 @@ public class SpringSecurityConfigurationBasicAuth {
                 // Allow all OPTIONS requests (useful for CORS preflight requests)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(HttpMethod.OPTIONS, "/inventory/**").permitAll() // Allow OPTIONS globally
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/auth/**").permitAll() // Permit all requests to /auth endpoints
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )

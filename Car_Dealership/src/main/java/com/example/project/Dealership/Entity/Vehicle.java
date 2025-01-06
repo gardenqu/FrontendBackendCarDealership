@@ -79,5 +79,10 @@ public class Vehicle {
         @Setter
         private BigDecimal saleprice;
 
+        @ManyToOne
+        @Setter
+        @JoinColumn(name = "userid")
+        private UserEntity userEntity;
+
 
     }

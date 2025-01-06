@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VehicleRepo extends PagingAndSortingRepository<Vehicle, Integer>, JpaRepository<Vehicle, Integer>, JpaSpecificationExecutor<Vehicle> {
@@ -29,7 +30,7 @@ public interface VehicleRepo extends PagingAndSortingRepository<Vehicle, Integer
 
     @Query(value = "SELECT * FROM Vehicle v"
             + " WHERE vin = ?1", nativeQuery = true)
-    Vehicle getVehicleByVin(String vin);
+    Optional<Vehicle> getVehicleByVin(String vin);
 
 
 }

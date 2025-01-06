@@ -1,9 +1,13 @@
 package com.example.project.Dealership.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,9 +32,16 @@ public class UserEntity {
     @Column
     @Setter
     private String password;
+
     @Column
     @Setter
     private String role;
+
+
+    // One-to-many relationship with Vehicle
+    @OneToMany(mappedBy = "userEntity")
+    @JsonIgnore
+    private List<Vehicle> vehicles;
 
 
 
